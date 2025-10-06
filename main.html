@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SDM • GOATED Student/Teacher Portal</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+  <style>
+    :root {
+      --indigo: #222589; /* primary */
+      --green: #1f9e75; /* accent */
+      --gold: #dac187; /* hint */
+      --ink: #0c0f26;
+      --card: #ffffff;
+      --muted: #8a90c9;
+      --bg: #f5f7fb;
+    }
+    * { box-sizing: border-box }
+    html, body { height: 100% }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: #1b1f3b;
+      background:
+        radial-gradient(1000px 600px at -10% -10%, rgba(34,37,137, .18), transparent 60%),
+        radial-gradient(900px 500px at 110% 110%, rgba(31,158,117, .15), transparent 60%),
+        var(--bg);
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0; z-index: 9;
+      display: flex; align-items: center; gap: 16px;
+      padding: 14px 20px;
+      background: linear-gradient(180deg, rgba(255,255,255, .75), rgba(255,255,255, .55));
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(34,37,137, .08);
+    }
+    .brand {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 800; letter-spacing: .4px;
+      color: var(--indigo);
+    }
+    .brand .dot {
+      width: 12px; height: 12px; border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 4px rgba(31,158,117, .18);
+    }
+    .grow { flex: 1 }
+    .role-switch {
+      display: flex; align-items: center; gap: 8px;
+      background: #fff;
+      border: 1px solid rgba(34,37,137, .12);
+      padding: 6px; border-radius: 999px;
+    }
+    .role-switch button {
+      border: none; background: transparent;
+      padding: 8px 14px; border-radius: 999px;
+      cursor: pointer; font-weight: 700; color: #5a5fae;
+      transition: .2s ease;
+    }
+    .role-switch button.active {
+      background: var(--indigo); color: #fff;
+      box-shadow: 0 6px 20px rgba(34,37,137, .25);
+    }
+    .langpick {
+      display: flex; align-items: center; gap: 10px;
+      background: #fff;
+      border: 1px solid rgba(34,37,137, .12);
+      padding: 8px 12px; border-radius: 12px;
+    }
+    select { border: none; outline: none; background: transparent; font-weight: 600; color: #334 }
+
+    .wrap {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 20px;
+      padding: 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .sidebar {
+      position: sticky; top: 70px; align-self: start;
+      background: #fff;
+      border: 1px solid rgba(34,37,137, .10);
+      border-radius: 16px; padding: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0, .05);
+    }
+    .nav {
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .nav button {
+      display: flex; align-items: center; gap: 12px;
+      width: 100%;
+      border: none; background: transparent;
+      cursor: pointer;
+      padding: 12px 12px; border-radius: 12px;
+      font-weight: 700; color: #2a2f58;
+      transition: .18s;
+    }
+    .nav button .ti { font-size: 20px; color: var(--indigo) }
+    .nav button.active {
+      background: linear-gradient(90deg, rgba(34,37,137, .10), rgba(31,158,117, .10));
+      outline: 1px solid rgba(34,37,137, .20);
+    }
+    .content {
+      min-height: 70vh;
+    }
+    .grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(12, 1fr);
+    }
+    .col-12 { grid-column: span 12 }
+    .col-6 { grid-column: span 6 }
+    .col-4 { grid-column: span 4 }
+
+    .card {
+      background: var(--card);
+      border: 1px solid rgba(34,37,137, .08);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0, .05);
+    }
+    .card h3 {
+      margin: 0 0 10px; color: var(--indigo);
+    }
+    .sub { color: #556; font-weight: 600 }
+    .pill {
+      background: rgba(31,158,117, .12); color: var(--green);
+      padding: 6px 10px; border-radius: 999px;
+      font-weight: 800; font-size: .85rem;
+    }
+    .cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      border: none; cursor: pointer; font-weight: 800;
+      background: linear-gradient(180deg, var(--green), #148d64);
+      color: #fff;
+      padding: 10px 14px; border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(31,158,117, .35);
+      transition: .2s;
+    }
+    .cta:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(31,158,117, .45);
+    }
+    .ghost {
+      border: 1px dashed rgba(34,37,137, .25); border-radius: 14px;
+      padding: 16px; text-align: center; color: #586;
+      background: rgba(34,37,137, .03);
+    }
+    .ghost.dragover {
+      background: rgba(31,158,117, .08);
+      outline: 2px dashed var(--green);
+    }
+    .progress {
+      height: 10px;
+      background: rgba(34,37,137, .12);
+      border-radius: 999px; overflow: hidden;
+    }
+    .progress > span {
+      display: block; height: 100%; width: 0%;
+      background: linear-gradient(90deg, var(--green), #21c292);
+      transition: width .4s ease;
+    }
+    .quote {
+      font-style: italic; color: #704;
+      background: linear-gradient(90deg, rgba(218,193,135, .35), transparent);
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(218,193,135, .5);
+    }
+    .muted { color: #6b6f99 }
+    .kpi {
+      display: flex; align-items: baseline; gap: 8px;
+    }
+    .kpi .big {
+      font-size: 2.2rem; font-weight: 800; color: var(--green);
+    }
+    .kpi .unit {
+      color: #2b2f66; font-weight: 800;
+    }
+    .row { display: flex; gap: 10px; flex-wrap: wrap }
+    .tag {
+      padding: 6px 10px; border-radius: 999px;
+      font-weight: 700;
+      background: rgba(34,37,137, .08); color: #384;
+    }
+    .badge {
+      background: var(--gold); color: #2b2f66;
+      padding: 4px 8px; border-radius: 8px;
+      font-weight: 800;
+    }
+    .divider {
+      height: 1px; background: rgba(34,37,137, .12);
+      margin: 12px 0;
+    }
+    .hidden { display: none !important }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand"><span class="dot"></span> SDM Connect Portal</div>
+    <div class="grow"></div>
+    <div class="langpick">
+      <i class="ti ti-language"></i>
+      <select id="uiLanguage">
+        <option value="en">English</option>
+        <option value="hi">हिंदी (Hindi)</option>
+        <option value="bn">বাংলা (Bengali)</option>
+        <option value="ta">தமிழ் (Tamil)</option>
+        <option value="te">తెలుగు (Telugu)</option>
+        <option value="mr">मराठी (Marathi)</option>
+        <option value="gu">ગુજરાતી (Gujarati)</option>
+        <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+        <option value="ur">اردو (Urdu)</option>
+      </select>
+    </div>
+    <div class="role-switch" id="roleSwitch">
+      <button data-role="student" class="active"><i class="ti ti-user"></i> Student</button>
+      <button data-role="teacher"><i class="ti ti-school"></i> Teacher</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <aside class="sidebar">
+      <div class="nav" id="nav">
+        <button class="active" data-tab="home"><i class="ti ti-home"></i> Home</button>
+        <button data-tab="learn" data-role-only="student"><i class="ti ti-book-2"></i> Learn</button>
+        <button data-tab="test" data-role-only="student"><i class="ti ti-checkup-list"></i> Test</button>
+        <div class="divider"></div>
+        <button data-tab="translate"><i class="ti ti-translate"></i> Translate (Text / Docs)</button>
+        <button data-tab="videostudio"><i class="ti ti-video"></i> Video Studio</button>
+        <button data-tab="skills"><i class="ti ti-trophy"></i> Skill Development</button>
+        <button data-tab="training" data-role-only="teacher"><i class="ti ti-microphone-2"></i> Training (Regional)</button>
+        <button data-tab="resources" data-role-only="teacher"><i class="ti ti-stack-2"></i> Resource Pool</button>
+        <button data-tab="chatbot" data-role-only="student">
+  <i class="ti ti-message-circle"></i> Study Chatbot
+</button>
+
+        <div class="divider"></div>
+        <button data-tab="settings"><i class="ti ti-settings"></i> Settings</button>
+      </div>
+    </aside>
+
+    <main class="content" id="content">
+      <!-- Student Home -->
+      <section class="grid" data-tab-panel="home" data-role-only="student">
+        <div class="card col-12">
+          <div class="row" style="justify-content:space-between; align-items:center">
+            <h3>Welcome back! <span class="badge">Daily Boost</span></h3>
+            <span class="pill" id="dayLabel">Day • • •</span>
+          </div>
+          <p class="quote" id="quoteBox">Loading your motivation…</p>
+        </div>
+
+        <div class="card col-6">
+          <h3>Time Learnt</h3>
+          <div class="kpi"><span class="big" id="timeHours">0</span><span class="unit">hrs</span><span class="big" id="timeMins" style="font-size:1.4rem">00</span><span class="unit">mins</span></div>
+          <p class="muted">Goal: 20 hrs this week</p>
+          <div class="progress"><span id="timeProgress"></span></div>
+        </div>
+
+        <div class="card col-6">
+          <h3>Improvement (This Month)</h3>
+          <canvas id="improveChart" height="120"></canvas>
+        </div>
+
+        <div class="card col-12">
+          <h3>Quick Actions</h3>
+          <div class="row">
+            <button class="cta" data-tab-jump="translate"><i class="ti ti-translate"></i> Translate Text</button>
+            <button class="cta" data-tab-jump="videostudio"><i class="ti ti-video-plus"></i> Make Video</button>
+            <button class="cta" data-tab-jump="skills"><i class="ti ti-bulb"></i> Skill Track</button>
+            <button class="cta" data-tab-jump="training"><i class="ti ti-microphone-2"></i> Dubbing/Training</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Teacher Home -->
+      <section class="grid hidden" data-tab-panel="home" data-role-only="teacher">
+        <div class="card col-12">
+          <div class="row" style="justify-content: space-between; align-items: center">
+            <h3>Welcome, Teacher</h3>
+            <span class="badge">Dashboard</span>
+          </div>
+          <p class="sub">Here's your hub to manage resources, training & classes.</p>
+        </div>
+
+        <div class="card col-6">
+          <h3>Resource Pool</h3>
+          <p class="muted">Access and share teaching materials.</p>
+          <button class="cta" data-tab-jump="resources">Go to Pool</button>
+        </div>
+
+        <div class="card col-6">
+          <h3>Training (Regional)</h3>
+          <p class="muted">View your upcoming training sessions.</p>
+          <button class="cta" data-tab-jump="training">Go to Training</button>
+        </div>
+
+        <div class="card col-6">
+          <h3>Class Analytics</h3>
+          <p class="muted">See student progress & insights.</p>
+          <button class="cta">View Analytics</button>
+        </div>
+
+        <div class="card col-6">
+          <h3>Messages</h3>
+          <p class="muted">Communicate with students & peers.</p>
+          <button class="cta">Open Inbox</button>
+        </div>
+      </section>
+
+      <!-- Translate / other tabs (common) -->
+      <section class="grid hidden" data-tab-panel="translate">
+        <!-- existing translate UI -->
+        <div class="card col-12"><h3>Translate Text / Documents</h3><p class="sub">Paste text or drop a document to get instant translations.</p></div>
+        <div class="card col-6">
+          <h3>Written Content</h3>
+          <textarea id="inputText" class="input" rows="8" placeholder="Paste or write content here…"></textarea>
+          <div class="row" style="align-items:center; margin-top:8px">
+            <span class="muted">Target language</span>
+            <select id="targetLang" style="border:1px solid rgba(34,37,137,.2); border-radius:8px; padding:6px 8px">
+              <option value="en">English</option>
+              <option value="hi">Hindi</option>
+              <option value="bn">Bengali</option>
+              <option value="ta">Tamil</option>
+              <option value="te">Telugu</option>
+              <option value="mr">Marathi</option>
+              <option value="gu">Gujarati</option>
+              <option value="pa">Punjabi</option>
+              <option value="ur">Urdu</option>
+            </select>
+            <button class="cta" id="translateBtn"><i class="ti ti-arrows-exchange"></i> Translate</button>
+          </div>
+          <div class="divider"></div>
+          <div class="ghost" id="docDrop">Drop DOC/PDF here or click to upload<input id="docInput" type="file" accept=".pdf,.doc,.docx,.txt" hidden></div>
+          <div class="progress" style="margin-top:10px"><span id="docProg"></span></div>
+        </div>
+        <div class="card col-6">
+          <h3>Output</h3>
+          <textarea id="outputText" class="input" rows="12" placeholder="Translated content will appear here…" readonly></textarea>
+        </div>
+      </section>
+
+      <!-- Video / other sections... keep your original ones, adding data-role-only where needed -->
+      <section class="grid hidden" data-tab-panel="videostudio">
+        <!-- original videostudio content -->
+        <div class="card col-12"><h3>Video Studio</h3><p class="sub">Translate videos • Record & dub.</p></div>
+        <div class="card col-6">
+          <h3>Translate Existing Video</h3>
+          <div class="ghost" id="vidDrop">Drop Video here or click to upload<input id="vidInput" type="file" accept="video/*" hidden></div>
+          <div class="row" style="align-items:center">
+            <span class="muted">Target language</span>
+            <select id="vidLang" style="border:1px solid rgba(34,37,137,.2); border-radius:8px; padding:6px 8px">
+              <option value="en">English</option>
+              <option value="hi">Hindi</option>
+              <option value="bn">Bengali</option>
+              <option value="ta">Tamil</option>
+              <option value="te">Telugu</option>
+              <option value="mr">Marathi</option>
+              <option value="gu">Gujarati</option>
+              <option value="pa">Punjabi</option>
+              <option value="ur">Urdu</option>
+            </select>
+            <button class="cta" id="translateVideo"><i class="ti ti-language"></i> Translate Video</button>
+          </div>
+          <div class="progress" style="margin-top:10px"><span id="vidTransProg"></span></div>
+        </div>
+        <div class="card col-6">
+          <h3>Record Lesson</h3>
+          <div class="row" style="align-items:center">
+            <button class="cta" id="recStart"><i class="ti ti-record-mail"></i> Start Recording</button>
+            <button class="cta" id="recStop" style="background:#a33; box-shadow:0 6px 20px rgba(163,51,51,.35)"><i class="ti ti-player-stop"></i> Stop</button>
+          </div>
+          <p class="muted" id="recStatus">Idle</p>
+        </div>
+        <div class="card col-6">
+          <h3>Dubbing</h3>
+          <div class="row" style="align-items:center">
+            <span class="muted">Dub to</span>
+            <select id="dubLang" style="border:1px solid rgba(34,37,137,.2); border-radius:8px; padding:6px 8px">
+              <option value="hi">Hindi</option><option value="bn">Bengali</option><option value="ta">Tamil</option><option value="te">Telugu</option>
+              <option value="mr">Marathi</option><option value="gu">Gujarati</option><option value="pa">Punjabi</option><option value="ur">Urdu</option><option value="en">English</option>
+            </select>
+            <button class="cta" id="dubBtn"><i class="ti ti-microphone-2"></i> Create Dub</button>
+          </div>
+          <div class="progress" style="margin-top:10px"><span id="dubProg"></span></div>
+        </div>
+      </section>
+
+      <section class="grid hidden" data-tab-panel="skills">
+        <div class="card col-12"><h3>Skill Development</h3><p class="sub">Track progress, unlock badges, and level up.</p></div>
+        <div class="card col-6">
+          <h3>Weekly Skill Growth</h3>
+          <canvas id="skillChart" height="140"></canvas>
+        </div>
+        <div class="card col-6">
+          <h3>Targets</h3>
+          <div class="row">
+            <span class="tag">Focus: Problem Solving</span>
+            <span class="tag">Focus: Communication</span>
+            <span class="tag">Focus: Creative Writing</span>
+          </div>
+          <div class="divider"></div>
+          <button class="cta"><i class="ti ti-target"></i> View Personalized Path</button>
+        </div>
+      </section>
+<section class="grid hidden" data-tab-panel="chatbot" data-role-only="student">
+  <div class="card col-12">
+    <h3>Study Chatbot</h3>
+    <p class="sub">Ask questions, get instant explanations, and revise smarter.</p>
+  </div>
+
+  <div class="card col-8">
+    <div id="chatWindow" class="ghost" style="height:300px; overflow-y:auto; text-align:left;">
+      <p class="muted">👋 Hi! I'm your AI study buddy. Ask me anything!</p>
+    </div>
+    <div class="row" style="margin-top:10px;">
+      <input id="chatInput" type="text" placeholder="Type your question..." style="flex:1; border:1px solid rgba(34,37,137,.2); border-radius:8px; padding:8px;">
+      <button class="cta" id="chatSend"><i class="ti ti-send"></i> Send</button>
+    </div>
+  </div>
+
+  <div class="card col-4">
+    <h3>Quick Tips</h3>
+    <ul class="muted">
+      <li>Ask “Explain photosynthesis simply”</li>
+      <li>Ask “Make a quiz on cell division”</li>
+      <li>Ask “Summarize Newton’s laws”</li>
+    </ul>
+  </div>
+</section>
+
+      <section class="grid hidden" data-tab-panel="settings">
+        <div class="card col-12"><h3>Settings</h3><p class="sub">Theme, language, and accessibility.</p></div>
+        <div class="card col-6">
+          <h3>Theme</h3>
+          <div class="row">
+            <button class="cta" id="themeLight"><i class="ti ti-sun"></i> Light</button>
+            <button class="cta" id="themeIndigo"><i class="ti ti-moon-stars"></i> Indigo</button>
+          </div>
+        </div>
+        <div class="card col-6">
+          <h3>Accessibility</h3>
+          <div class="row">
+            <span class="tag">High Contrast</span>
+            <span class="tag">Bigger Text</span>
+            <span class="tag">Focus Outlines</span>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script>
+    const nav = document.getElementById('nav');
+    const panels = document.querySelectorAll('[data-tab-panel]');
+    nav.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-tab]');
+      if (!btn) return;
+      nav.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const tab = btn.dataset.tab;
+      panels.forEach(p => {
+        p.classList.toggle('hidden', p.dataset.tabPanel !== tab);
+      });
+      applyRole(currentRole);
+    });
+    document.querySelectorAll('[data-tab-jump]').forEach(b => {
+      b.addEventListener('click', () => {
+        const t = b.getAttribute('data-tab-jump');
+        nav.querySelectorAll('button').forEach(x => {
+          x.classList.toggle('active', x.dataset.tab === t);
+        });
+        panels.forEach(p => p.classList.toggle('hidden', p.dataset.tabPanel !== t));
+        applyRole(currentRole);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
+
+    let currentRole = 'student';
+    const roleSwitch = document.getElementById('roleSwitch');
+    roleSwitch.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-role]');
+      if (!btn) return;
+      roleSwitch.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentRole = btn.dataset.role;
+      applyRole(currentRole);
+    });
+
+    function applyRole(role) {
+      // Hide/show buttons
+      nav.querySelectorAll('[data-role-only]').forEach(btn => {
+        btn.classList.toggle('hidden', btn.getAttribute('data-role-only') !== role);
+      });
+
+      // Hide panels that do not belong
+      document.querySelectorAll('[data-tab-panel][data-role-only]').forEach(panel => {
+        const allowed = panel.getAttribute('data-role-only') === role;
+        if (!allowed) {
+          panel.classList.add('hidden');
+        }
+      });
+
+      // If current tab is disallowed or none, go to Home
+      const activeBtn = nav.querySelector('button.active');
+      if (
+        !activeBtn ||
+        (activeBtn.hasAttribute('data-role-only') && activeBtn.getAttribute('data-role-only') !== role)
+      ) {
+        nav.querySelector('button[data-tab="home"]').click();
+        return;
+      }
+
+      // If Home tab is active, ensure correct home panel shows
+      if (activeBtn.dataset.tab === "home") {
+        document.querySelectorAll('[data-tab-panel="home"]').forEach(panel => {
+          panel.classList.toggle('hidden', panel.getAttribute('data-role-only') !== role);
+        });
+      }
+    }
+    applyRole(currentRole);
+
+    // --- Daily Quote Logic ---
+    const quotes = [
+      "Small steps daily → giant leaps later.",
+      "Discipline beats motivation—show up!",
+      "If it’s hard, you’re growing.",
+      "Be the hardest worker in the room.",
+      "Practice doesn’t make perfect—practice makes progress.",
+      "You’re one focused hour away from surprising yourself.",
+      "Concepts > cramming. Understand deeply.",
+      "Talent is common. Consistency is rare.",
+      "Read, recall, repeat.",
+      "Yesterday’s ceiling is today’s floor."
+    ];
+    const quoteBox = document.getElementById('quoteBox');
+    const dayLabel = document.getElementById('dayLabel');
+    const idx = new Date().getDate() % quotes.length;
+    quoteBox.textContent = quotes[idx];
+    dayLabel.textContent = new Date().toLocaleDateString();
+
+    // Time Learnt
+    const timeHours = document.getElementById('timeHours');
+    const timeMins = document.getElementById('timeMins');
+    const timeProg = document.getElementById('timeProgress');
+    let minutes = 720; // demo
+    function renderTime() {
+      const hrs = Math.floor(minutes / 60), mins = minutes % 60;
+      timeHours.textContent = hrs;
+      timeMins.textContent = String(mins).padStart(2, '0');
+      const pct = Math.min(100, Math.round((hrs / 20) * 100));
+      timeProg.style.width = pct + '%';
+    }
+    renderTime();
+
+    // Charts
+    const improveCtx = document.getElementById('improveChart');
+    new Chart(improveCtx, {
+      type: 'line',
+      data: {
+        labels: ['W1','W2','W3','W4'],
+        datasets: [{
+          label: 'Improvement %',
+          data: [40,58,72,88],
+          borderColor: '#1f9e75',
+          backgroundColor: 'rgba(31,158,117, .18)',
+          pointBackgroundColor: '#dac187',
+          borderWidth: 2, tension: .35, fill: true
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, max: 100 },
+          x: { ticks: { color: '#455' } }
+        }
+      }
+    });
+    const skillCtx = document.getElementById('skillChart');
+    if (skillCtx) {
+      new Chart(skillCtx, {
+        type: 'bar',
+        data: {
+          labels: ['Problem Solving', 'Communication', 'Creativity', 'Speed'],
+          datasets: [{ data: [68,74,62,81], backgroundColor: ['#1f9e75','#1f9e75','#1f9e75','#1f9e75'] }]
+        },
+        options: {
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true, max: 100 } }
+        }
+      });
+    }
+
+    // Drag & Drop helper (same as before)
+    function makeDrop(zoneId, inputId, progressId) {
+      const zone = document.getElementById(zoneId);
+      const input = document.getElementById(inputId);
+      const prog = document.getElementById(progressId);
+      if (!zone) return;
+      zone.addEventListener('click', () => input && input.click());
+      ['dragenter','dragover'].forEach(ev => zone.addEventListener(ev, e => {
+        e.preventDefault();
+        zone.classList.add('dragover');
+      }));
+      ['dragleave','drop'].forEach(ev => zone.addEventListener(ev, e => {
+        e.preventDefault();
+        zone.classList.remove('dragover');
+      }));
+      zone.addEventListener('drop', e => {
+        const files = e.dataTransfer.files;
+        fakeProgress(prog);
+        if (input) input.files = files;
+      });
+      if (input) input.addEventListener('change', () => fakeProgress(prog));
+    }
+    function fakeProgress(bar) {
+      if (!bar) return;
+      let w = 0;
+      const t = setInterval(() => {
+        w += Math.random()*18 + 8;
+        bar.style.width = Math.min(100, w) + '%';
+        if (w >= 100) clearInterval(t);
+      }, 220);
+    }
+    makeDrop('docDrop','docInput','docProg');
+    makeDrop('vidDrop','vidInput','vidTransProg');
+    makeDrop('poolDrop','poolInput','poolProg');
+
+    // Translate action
+    const out = (id, text) => document.getElementById(id).value = text;
+    document.getElementById('translateBtn').addEventListener('click', () => {
+      const src = document.getElementById('inputText').value.trim();
+      const lang = document.getElementById('targetLang').value;
+      if (!src) {
+        out('outputText','Please paste some text to translate.');
+        return;
+      }
+      out('outputText','Translating…');
+      setTimeout(() => out('outputText', `[${lang}] ${src}\n\n(Preview • replace with real translate API)`), 800);
+    });
+
+    document.getElementById('translateVideo')?.addEventListener('click', () => fakeProgress(document.getElementById('vidTransProg')));
+    document.getElementById('dubBtn')?.addEventListener('click', () => fakeProgress(document.getElementById('dubProg')));
+
+    let rec = false;
+    const recStatus = document.getElementById('recStatus');
+    document.getElementById('recStart')?.addEventListener('click', () => {
+      rec = true; recStatus.textContent = 'Recording… 🎙️ (demo)';
+    });
+    document.getElementById('recStop')?.addEventListener('click', () => {
+      rec = false; recStatus.textContent = 'Stopped. Saved draft (demo).';
+    });
+  </script>
+</body>
+</html>
